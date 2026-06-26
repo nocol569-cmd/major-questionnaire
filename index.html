@@ -1,0 +1,1268 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>高考择校择专业初筛问卷</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --panel: #ffffff;
+      --text: #1f2937;
+      --muted: #667085;
+      --line: #d7dde8;
+      --primary: #1b5e8f;
+      --primary-strong: #12496f;
+      --accent: #2f8f6b;
+      --danger: #c2413b;
+      --warning: #9a6516;
+      --soft: #eef5fa;
+      --shadow: 0 8px 24px rgba(28, 43, 64, 0.08);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+    }
+
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header-inner, main {
+      width: min(1120px, calc(100% - 28px));
+      margin: 0 auto;
+    }
+
+    .header-inner {
+      padding: 18px 0 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(22px, 4vw, 34px);
+      letter-spacing: 0;
+      line-height: 1.25;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .progress-wrap {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: #e7ecf3;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-bar span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      transition: width .2s ease;
+    }
+
+    main {
+      padding: 22px 0 48px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .notice, .result-panel, .history-panel, .question-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .notice {
+      padding: 16px;
+      color: #344054;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .question-card {
+      padding: 18px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .question-head {
+      display: grid;
+      gap: 4px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 10px;
+    }
+
+    h2, h3 {
+      margin: 0;
+      line-height: 1.35;
+    }
+
+    h2 { font-size: 19px; }
+    h3 { font-size: 17px; }
+
+    .required { color: var(--danger); font-weight: 700; }
+    .hint { color: var(--muted); font-size: 13px; }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    label.field {
+      display: grid;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid #c8d1df;
+      border-radius: 7px;
+      padding: 10px 11px;
+      font: inherit;
+      background: #ffffff;
+      color: var(--text);
+      min-height: 42px;
+    }
+
+    textarea { min-height: 88px; resize: vertical; }
+
+    input:focus, textarea:focus, select:focus, button:focus-visible {
+      outline: 3px solid rgba(27, 94, 143, .18);
+      border-color: var(--primary);
+    }
+
+    .choice-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      border: 1px solid #b9c5d6;
+      background: #ffffff;
+      color: #26364a;
+      padding: 8px 10px;
+      border-radius: 999px;
+      min-height: 38px;
+      cursor: pointer;
+      user-select: none;
+      transition: background .15s ease, border-color .15s ease, color .15s ease;
+    }
+
+    .chip input { display: none; }
+
+    .chip.selected {
+      color: #ffffff;
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .rating-table {
+      display: grid;
+      gap: 10px;
+    }
+
+    .rating-row {
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfcfe;
+    }
+
+    .rating-buttons {
+      display: flex;
+      gap: 6px;
+      flex-wrap: nowrap;
+    }
+
+    .rate-btn {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border-radius: 7px;
+      border: 1px solid #b9c5d6;
+      background: #ffffff;
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .rate-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+    }
+
+    .ranking-row {
+      display: grid;
+      grid-template-columns: minmax(130px, 1fr) 120px;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .ranking-row select.rank-filled {
+      color: var(--primary);
+      border-color: var(--primary);
+      background: #eef5fa;
+    }
+
+    .ranking-row select.rank-empty {
+      color: var(--danger);
+      border-color: rgba(194, 65, 59, .65);
+      background: #fff8f7;
+    }
+
+    .ranking-row select option.used-rank {
+      color: #98a2b3;
+      background: #f2f4f7;
+    }
+
+    .ranking-row select option.available-rank {
+      color: var(--danger);
+      background: #ffffff;
+      font-weight: 700;
+    }
+
+    .subject-display {
+      min-height: 42px;
+      border: 1px solid #c8d1df;
+      border-radius: 7px;
+      padding: 10px 11px;
+      background: #f3f6fa;
+      color: #344054;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    button {
+      border: 1px solid transparent;
+      border-radius: 7px;
+      padding: 10px 13px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      background: #ffffff;
+      color: var(--text);
+      min-height: 42px;
+    }
+
+    .btn-primary { background: var(--primary); color: #ffffff; border-color: var(--primary); }
+    .btn-primary:hover { background: var(--primary-strong); }
+    .btn-secondary { border-color: #b8c4d4; }
+    .btn-accent { background: var(--accent); color: #ffffff; border-color: var(--accent); }
+    .btn-danger { color: #ffffff; background: var(--danger); border-color: var(--danger); }
+
+    .error-box {
+      display: none;
+      border: 1px solid rgba(194, 65, 59, .35);
+      background: #fff4f2;
+      color: #8f2f2a;
+      padding: 12px;
+      border-radius: var(--radius);
+    }
+
+    .error-box.show { display: block; }
+
+    .result-panel, .history-panel {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .summary-item {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 10px;
+      background: var(--soft);
+    }
+
+    .summary-item strong { display: block; }
+
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #101828;
+      color: #f9fafb;
+      border-radius: var(--radius);
+      padding: 14px;
+      max-height: 460px;
+      overflow: auto;
+      margin: 0;
+      font-size: 13px;
+    }
+
+    .history-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .history-item {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+      background: #fbfcfe;
+    }
+
+    .history-meta {
+      display: grid;
+      gap: 3px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      background: #1f2937;
+      color: #ffffff;
+      padding: 10px 14px;
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease;
+      z-index: 30;
+      max-width: calc(100% - 24px);
+      text-align: center;
+    }
+
+    .toast.show { opacity: 1; }
+
+    @media (max-width: 760px) {
+      .header-inner, main { width: min(100% - 18px, 1120px); }
+      .grid.two, .grid.three, .summary-grid { grid-template-columns: 1fr; }
+      .question-card, .result-panel, .history-panel { padding: 14px; }
+      .rating-row { grid-template-columns: 1fr; }
+      .rating-buttons { justify-content: space-between; }
+      .rate-btn { flex: 1; min-width: 42px; }
+      .ranking-row { grid-template-columns: 1fr; }
+      .progress-wrap { grid-template-columns: 1fr; }
+      button { width: 100%; }
+      .chip { flex: 1 1 auto; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div>
+        <h1>高考择校择专业初筛问卷</h1>
+        <p class="subtitle">根据分数、选科、兴趣、排斥项、就业期待，初步判断适合继续分析的专业方向。</p>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-bar" aria-label="填写进度"><span id="progressBar"></span></div>
+        <strong id="progressText">已完成 0/10</strong>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="notice">
+      请按真实想法填写，不要为了显得有规划而乱选。这个问卷不是直接决定专业，而是帮助筛出优先推荐、谨慎考虑、尽量避开的方向。
+    </section>
+
+    <section class="toolbar" aria-label="草稿工具">
+      <button type="button" class="btn-secondary" id="saveDraftBtn">保存草稿</button>
+      <button type="button" class="btn-secondary" id="loadDraftBtn">读取草稿</button>
+      <button type="button" class="btn-secondary" id="clearFormBtn">清空当前表单</button>
+    </section>
+
+    <form id="questionnaire" novalidate>
+      <section class="question-card" data-section="basic">
+        <div class="question-head">
+          <h2>问题1：基础信息 <span class="required">*</span></h2>
+          <p class="hint">考生身份、地区、成绩和体检限制。</p>
+        </div>
+        <div class="grid two">
+          <label class="field">考生姓名或编号 <span class="required">*</span><input name="studentName" required></label>
+          <label class="field">省份 <span class="required">*</span><select name="province" required id="provinceSelect">
+            <option value="">请选择省份</option>
+          </select></label>
+          <label class="field">科类 <span class="required">*</span><select name="category" required>
+            <option value="">请选择</option><option>物理类</option><option>历史类</option><option>综合改革</option><option>其他</option>
+          </select></label>
+          <label class="field">再选科目组合 <span class="required">*</span><select name="subjectCombination" required id="subjectCombinationSelect">
+            <option value="">请先选择科类</option>
+          </select></label>
+          <label class="field">总分 <span class="required">*</span><input name="totalScore" type="number" min="0" required></label>
+          <label class="field">全省位次 <span class="required">*</span><input name="rank" type="number" min="1" required></label>
+          <label class="field">性别<input name="gender" placeholder="可选，不强制填写"></label>
+          <label class="field">是否有体检限制 <span class="required">*</span><select name="physicalLimit" required>
+            <option value="">请选择</option><option>无</option><option>色盲色弱</option><option>近视严重</option><option>身高限制</option><option>其他</option>
+          </select></label>
+          <label class="field">体检限制备注<textarea name="physicalNote" placeholder="可选"></textarea></label>
+        </div>
+      </section>
+
+      <section class="question-card" data-section="scores">
+        <div class="question-head">
+          <h2>问题2：各科分数与学科感受 <span class="required">*</span></h2>
+          <p class="hint">用于识别优势科目、风险科目和后续学习承受度。</p>
+        </div>
+        <div class="grid three">
+          <label class="field">语文分数 <span class="required">*</span><input name="chineseScore" type="number" min="0" required></label>
+          <label class="field">数学分数 <span class="required">*</span><input name="mathScore" type="number" min="0" required></label>
+          <label class="field">英语分数 <span class="required">*</span><input name="englishScore" type="number" min="0" required></label>
+          <label class="field">首选科目 <span class="required">*</span><div class="subject-display" id="primarySubjectDisplay">请先选择选科组合</div></label>
+          <label class="field">首选科目分数 <span class="required">*</span><input name="primarySubjectScore" type="number" min="0" required placeholder="如：86"></label>
+          <label class="field">再选科目1 <span class="required">*</span><div class="subject-display" id="secondarySubject1Display">请先选择选科组合</div></label>
+          <label class="field">再选科目1分数 <span class="required">*</span><input name="secondarySubject1Score" type="number" min="0" required placeholder="如：82"></label>
+          <label class="field">再选科目2 <span class="required">*</span><div class="subject-display" id="secondarySubject2Display">请先选择选科组合</div></label>
+          <label class="field">再选科目2分数 <span class="required">*</span><input name="secondarySubject2Score" type="number" min="0" required placeholder="如：90"></label>
+        </div>
+        <div class="grid">
+          <div>
+            <strong>最擅长科目 <span class="required">*</span></strong>
+            <div class="choice-grid" id="strengthSubjects"></div>
+          </div>
+          <div>
+            <strong>最讨厌科目 <span class="required">*</span></strong>
+            <div class="choice-grid" id="dislikeSubjects"></div>
+          </div>
+          <label class="field">补充说明<textarea name="subjectNote"></textarea></label>
+        </div>
+      </section>
+
+      <section class="question-card" data-section="interests">
+        <div class="question-head">
+          <h2>问题3：专业方向兴趣评分 <span class="required">*</span></h2>
+          <p class="hint">1=完全不想学，2=不太想，3=一般，4=比较想，5=很想学。</p>
+        </div>
+        <div class="rating-table" id="interestRatings"></div>
+      </section>
+
+      <section class="question-card" data-section="rejected">
+        <div class="question-head">
+          <h2>问题4：明确不想学的专业 <span class="required">*</span></h2>
+          <p class="hint">至少选择或填写 1 个。可多选，也可写自定义排斥专业。</p>
+        </div>
+        <div class="choice-grid" id="rejectedMajors"></div>
+        <label class="field">自定义排斥专业<input name="customRejectedMajors" placeholder="多个可用顿号、逗号或空格分隔"></label>
+      </section>
+
+      <section class="question-card" data-section="learning">
+        <div class="question-head">
+          <h2>问题5：最不能接受的学习内容 <span class="required">*</span></h2>
+        </div>
+        <div class="choice-grid" id="learningDislikes"></div>
+        <label class="field">补充说明<textarea name="learningNote"></textarea></label>
+      </section>
+
+      <section class="question-card" data-section="career">
+        <div class="question-head">
+          <h2>问题6：未来工作期待 <span class="required">*</span></h2>
+          <p class="hint">最多选择 3 个最重要的方向。</p>
+        </div>
+        <div class="choice-grid" id="careerExpectations"></div>
+      </section>
+
+      <section class="question-card" data-section="graduate">
+        <div class="question-head">
+          <h2>问题7：读研意愿 <span class="required">*</span></h2>
+        </div>
+        <div class="choice-grid" id="graduateStudy"></div>
+      </section>
+
+      <section class="question-card" data-section="work">
+        <div class="question-head">
+          <h2>问题8：工作场景接受度 <span class="required">*</span></h2>
+          <p class="hint">最能接受、最不能接受的场景各最多选择 3 个。</p>
+        </div>
+        <div class="grid two">
+          <div>
+            <strong>最能接受的工作场景 <span class="required">*</span></strong>
+            <div class="choice-grid" id="acceptedWorkScenes"></div>
+          </div>
+          <div>
+            <strong>最不能接受的工作场景 <span class="required">*</span></strong>
+            <div class="choice-grid" id="rejectedWorkScenes"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="question-card" data-section="constraints">
+        <div class="question-head">
+          <h2>问题9：城市、学费、距离限制 <span class="required">*</span></h2>
+        </div>
+        <div class="choice-grid" id="cityTuitionConstraints"></div>
+        <label class="field">补充说明<textarea name="constraintNote"></textarea></label>
+      </section>
+
+      <section class="question-card" data-section="ranking">
+        <div class="question-head">
+          <h2>问题10：重要因素排序 <span class="required">*</span></h2>
+          <p class="hint">每项选择 1-10 的唯一名次，不能重复。</p>
+        </div>
+        <div class="grid" id="priorityRanking"></div>
+      </section>
+
+      <div class="error-box" id="errorBox"></div>
+      <div class="actions">
+        <button type="submit" class="btn-primary">提交并生成结果</button>
+        <button type="button" class="btn-secondary" id="clearFormBtn2">清空当前表单</button>
+      </div>
+    </form>
+
+    <section class="result-panel" id="resultPanel" hidden>
+      <h2>结果预览</h2>
+      <div class="summary-grid" id="resultSummary"></div>
+      <div class="actions">
+        <button type="button" class="btn-primary" id="copyMarkdownBtn">复制 Markdown</button>
+        <button type="button" class="btn-secondary" id="exportJsonBtn">导出 JSON</button>
+        <button type="button" class="btn-secondary" id="exportCsvBtn">导出 CSV</button>
+        <button type="button" class="btn-accent" id="saveHistoryBtn">保存到历史记录</button>
+        <button type="button" class="btn-secondary" id="clearFormBtn3">清空表单</button>
+      </div>
+      <pre id="markdownPreview"></pre>
+    </section>
+
+    <section class="history-panel">
+      <div class="actions">
+        <h2 style="flex:1 1 auto;">历史提交记录</h2>
+        <button type="button" class="btn-secondary" id="refreshHistoryBtn">刷新历史</button>
+        <button type="button" class="btn-danger" id="clearHistoryBtn">清空全部历史</button>
+      </div>
+      <div class="history-list" id="historyList"></div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script>
+    const STORAGE_KEYS = {
+      draft: "majorQuestionnaireDraft.v1",
+      history: "majorQuestionnaireHistory.v1"
+    };
+
+    const PROVINCES = ["北京", "天津", "河北", "山西", "内蒙古", "辽宁", "吉林", "黑龙江", "上海", "江苏", "浙江", "安徽", "福建", "江西", "山东", "河南", "湖北", "湖南", "广东", "广西", "海南", "重庆", "四川", "贵州", "云南", "西藏", "陕西", "甘肃", "青海", "宁夏", "新疆"];
+    const SUBJECTS = ["语文", "数学", "英语", "物理", "历史", "化学", "生物", "政治", "地理"];
+    const SELECTIVE_SUBJECTS = ["化学", "生物", "政治", "地理"];
+    const SUBJECT_PAIR_COMBINATIONS = [
+      ["化学", "生物"],
+      ["化学", "政治"],
+      ["化学", "地理"],
+      ["生物", "政治"],
+      ["生物", "地理"],
+      ["政治", "地理"]
+    ];
+    const INTEREST_DIRECTIONS = [
+      "计算机 / 软件工程 / 人工智能",
+      "电子信息 / 通信 / 自动化",
+      "电气 / 能源 / 机器人工程",
+      "机械 / 车辆 / 智能制造",
+      "土木 / 建筑 / 交通",
+      "材料 / 化学 / 化工 / 环境",
+      "生物 / 食品 / 药学 / 医学",
+      "地理信息 / 测绘 / 遥感 / 城乡规划",
+      "财经 / 会计 / 金融 / 审计",
+      "法学 / 汉语言 / 新闻 / 外语",
+      "师范 / 教育",
+      "管理 / 市场营销 / 人力资源",
+      "公安 / 军学 / 海关 / 航海类",
+      "艺术设计 / 数字媒体 / 传媒创意"
+    ];
+    const REJECTED_MAJOR_OPTIONS = "医学、师范、计算机、软件、人工智能、电子信息、通信、电气、自动化、机械、车辆、土木、建筑、交通、材料、化学、化工、环境、农学、生物、食品、药学、护理、会计、金融、法学、新闻、外语、管理、市场营销、测绘、遥感、城乡规划、公安、军校、航海".split("、");
+    const LEARNING_OPTIONS = ["高等数学", "线性代数/概率统计", "编程/代码调试", "物理/电路/力学", "化学实验", "生物医学实验", "大量背诵写作", "画图/制图/建模", "机械拆装/工程实践", "长期读研", "频繁考试考证", "都能接受"];
+    const CAREER_OPTIONS = ["高收入", "稳定", "考公考编", "进国企央企", "互联网/软件/数据方向", "当老师", "医院/医药方向", "金融/财会", "企业管理/运营", "销售/市场", "技术工程师", "设计/传媒/内容", "科研/读研深造", "还没想好但希望别太坑"];
+    const GRADUATE_OPTIONS = ["愿意，能接受本科只是起点", "可以接受，但不想压力太大", "不太想，最好本科就业", "坚决不读研", "还没想好"];
+    const WORK_SCENES = ["办公室电脑工作", "写代码做项目", "数据分析", "学校教学", "医院或实验室", "工厂或工程现场", "户外外业/出差", "政府机关/事业单位", "金融银行", "销售沟通", "设计创意媒体", "科研读研"];
+    const CONSTRAINT_OPTIONS = ["省内优先", "周边省份可以", "全国都可以", "不去太远", "不去太偏", "不去太冷", "城市越大越好", "离家近重要", "公办优先", "可接受中外合作", "不接受高学费", "可接受民办", "不接受民办", "可接受独立学院/转设院校", "不接受独立学院/转设院校"];
+    const RANKING_ITEMS = ["学校名气", "专业就业", "城市", "收入", "稳定", "兴趣", "离家近", "学费", "考研前景", "学起来别太痛苦"];
+
+    let currentResult = null;
+
+    if (!window.CSS) window.CSS = {};
+    if (!CSS.escape) {
+      CSS.escape = value => String(value).replace(/["\\\]]/g, "\\$&");
+    }
+
+    function el(id) { return document.getElementById(id); }
+    function slug(text) { return text.replace(/[^\u4e00-\u9fa5a-zA-Z0-9]+/g, "_").replace(/^_|_$/g, ""); }
+    function nowText() { return new Date().toLocaleString("zh-CN", { hour12: false }); }
+    function safe(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
+    }
+
+    function showToast(message) {
+      const toast = el("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove("show"), 1800);
+    }
+
+    function fillSelect(select, options, placeholder) {
+      select.innerHTML = `<option value="">${placeholder}</option>` + options.map(option => `<option value="${safe(option)}">${safe(option)}</option>`).join("");
+    }
+
+    function renderProvinceAndSubjectSelectors() {
+      fillSelect(el("provinceSelect"), PROVINCES, "请选择省份");
+      updateSubjectCombinationOptions();
+      el("provinceSelect").addEventListener("change", updateProgress);
+      document.querySelector('[name="category"]').addEventListener("change", () => {
+        updateSubjectCombinationOptions();
+        updateSubjectDisplays();
+        updateProgress();
+      });
+      el("subjectCombinationSelect").addEventListener("change", () => {
+        updateSubjectDisplays();
+        updateProgress();
+      });
+      updateSubjectDisplays();
+    }
+
+    function getPrimarySubjectByCategory() {
+      const category = document.querySelector('[name="category"]').value;
+      if (category === "物理类") return "物理";
+      if (category === "历史类") return "历史";
+      return "";
+    }
+
+    function updateSubjectCombinationOptions() {
+      const select = el("subjectCombinationSelect");
+      const primary = getPrimarySubjectByCategory();
+      if (!primary) {
+        fillSelect(select, [], "请先选择物理类或历史类");
+        select.disabled = true;
+        return;
+      }
+      select.disabled = false;
+      fillSelect(select, SUBJECT_PAIR_COMBINATIONS.map(pair => pair.join("+")), "请选择再选科目组合");
+    }
+
+    function getSelectedCombinationSubjects() {
+      const primary = getPrimarySubjectByCategory();
+      const selectedPair = el("subjectCombinationSelect").value;
+      const pair = selectedPair ? selectedPair.split("+") : [];
+      return primary && pair.length === 2 ? [primary, ...pair] : [];
+    }
+
+    function getAutoSubjects() {
+      const subjects = getSelectedCombinationSubjects();
+      return {
+        primary: subjects[0] || "",
+        secondary1: subjects[1] || "",
+        secondary2: subjects[2] || ""
+      };
+    }
+
+    function updateSubjectDisplays() {
+      const subjects = getAutoSubjects();
+      el("primarySubjectDisplay").textContent = subjects.primary || "请先选择选科组合";
+      el("secondarySubject1Display").textContent = subjects.secondary1 || "请先选择选科组合";
+      el("secondarySubject2Display").textContent = subjects.secondary2 || "请先选择选科组合";
+    }
+
+    function renderChoiceGroup(containerId, name, options, type = "checkbox", limit = 0) {
+      const container = el(containerId);
+      container.innerHTML = "";
+      options.forEach(option => {
+        const label = document.createElement("label");
+        label.className = "chip";
+        label.innerHTML = `<input type="${type}" name="${name}" value="${option}"><span>${option}</span>`;
+        const input = label.querySelector("input");
+        input.addEventListener("change", () => {
+          if (type === "checkbox" && limit > 0 && getCheckedValues(name).length > limit) {
+            input.checked = false;
+            showToast(`最多选择 ${limit} 个`);
+          }
+          updateChoiceStyles(name);
+          updateProgress();
+        });
+        container.appendChild(label);
+      });
+    }
+
+    function updateChoiceStyles(name) {
+      document.querySelectorAll(`input[name="${CSS.escape(name)}"]`).forEach(input => {
+        input.closest(".chip").classList.toggle("selected", input.checked);
+      });
+    }
+
+    function renderRatings() {
+      const container = el("interestRatings");
+      container.innerHTML = "";
+      INTEREST_DIRECTIONS.forEach(direction => {
+        const row = document.createElement("div");
+        row.className = "rating-row";
+        row.dataset.direction = direction;
+        row.innerHTML = `<strong>${direction}</strong><div class="rating-buttons">${[1,2,3,4,5].map(n => `<button type="button" class="rate-btn" data-value="${n}" aria-label="${direction} ${n}分">${n}</button>`).join("")}</div>`;
+        row.querySelectorAll(".rate-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            row.dataset.value = btn.dataset.value;
+            row.querySelectorAll(".rate-btn").forEach(b => b.classList.toggle("active", b === btn));
+            updateProgress();
+          });
+        });
+        container.appendChild(row);
+      });
+    }
+
+    function renderRanking() {
+      const container = el("priorityRanking");
+      container.innerHTML = "";
+      RANKING_ITEMS.forEach(item => {
+        const row = document.createElement("div");
+        row.className = "ranking-row";
+        row.innerHTML = `<strong>${item}</strong><select name="rank_${slug(item)}" data-rank-item="${item}" required><option value="">请选择名次</option>${RANKING_ITEMS.map((_, i) => `<option value="${i + 1}">${i + 1}</option>`).join("")}</select>`;
+        row.querySelector("select").addEventListener("change", () => {
+          updateRankingOptionStyles();
+          updateProgress();
+        });
+        container.appendChild(row);
+      });
+      updateRankingOptionStyles();
+    }
+
+    function updateRankingOptionStyles() {
+      const selects = Array.from(document.querySelectorAll("[data-rank-item]"));
+      const used = new Set(selects.map(select => select.value).filter(Boolean));
+      selects.forEach(select => {
+        select.classList.toggle("rank-filled", Boolean(select.value));
+        select.classList.toggle("rank-empty", !select.value);
+        Array.from(select.options).forEach(option => {
+          if (!option.value) return;
+          const usedByAnotherItem = used.has(option.value) && option.value !== select.value;
+          option.disabled = usedByAnotherItem;
+          option.className = usedByAnotherItem ? "used-rank" : "available-rank";
+        });
+      });
+    }
+
+    function getCheckedValues(name) {
+      return Array.from(document.querySelectorAll(`input[name="${CSS.escape(name)}"]:checked`)).map(input => input.value);
+    }
+
+    function splitCustom(value) {
+      return (value || "").split(/[、，,\s]+/).map(v => v.trim()).filter(Boolean);
+    }
+
+    function getInterestRatings() {
+      const ratings = {};
+      document.querySelectorAll("#interestRatings .rating-row").forEach(row => {
+        ratings[row.dataset.direction] = row.dataset.value ? Number(row.dataset.value) : null;
+      });
+      return ratings;
+    }
+
+    function getPriorityRanking() {
+      const pairs = Array.from(document.querySelectorAll("[data-rank-item]")).map(select => ({
+        item: select.dataset.rankItem,
+        rank: select.value ? Number(select.value) : null
+      }));
+      return pairs.sort((a, b) => (a.rank || 99) - (b.rank || 99));
+    }
+
+    function collectData() {
+      const form = el("questionnaire");
+      const fd = new FormData(form);
+      const rejectedMajors = [...getCheckedValues("rejectedMajors"), ...splitCustom(fd.get("customRejectedMajors"))];
+      const autoSubjects = getAutoSubjects();
+      return {
+        id: "MQ-" + Date.now(),
+        submittedAt: nowText(),
+        basicInfo: {
+          studentName: fd.get("studentName")?.trim(),
+          province: fd.get("province")?.trim(),
+          category: fd.get("category"),
+          subjectCombination: autoSubjects.primary ? [autoSubjects.primary, autoSubjects.secondary1, autoSubjects.secondary2].filter(Boolean).join("+") : "",
+          selectedSubjectPair: fd.get("subjectCombination")?.trim(),
+          totalScore: fd.get("totalScore"),
+          rank: fd.get("rank"),
+          gender: fd.get("gender")?.trim(),
+          physicalLimit: fd.get("physicalLimit"),
+          physicalNote: fd.get("physicalNote")?.trim()
+        },
+        scores: {
+          chinese: fd.get("chineseScore"),
+          math: fd.get("mathScore"),
+          english: fd.get("englishScore"),
+          primarySubject: autoSubjects.primary,
+          primarySubjectScore: fd.get("primarySubjectScore"),
+          secondarySubject1: autoSubjects.secondary1,
+          secondarySubject1Score: fd.get("secondarySubject1Score"),
+          secondarySubject2: autoSubjects.secondary2,
+          secondarySubject2Score: fd.get("secondarySubject2Score"),
+          strengthSubjects: getCheckedValues("strengthSubjects"),
+          dislikeSubjects: getCheckedValues("dislikeSubjects"),
+          note: fd.get("subjectNote")?.trim()
+        },
+        interestRatings: getInterestRatings(),
+        rejectedMajors,
+        learningDislikes: getCheckedValues("learningDislikes"),
+        learningNote: fd.get("learningNote")?.trim(),
+        careerExpectations: getCheckedValues("careerExpectations"),
+        graduateStudy: getCheckedValues("graduateStudy")[0] || "",
+        workScenes: {
+          accepted: getCheckedValues("acceptedWorkScenes"),
+          rejected: getCheckedValues("rejectedWorkScenes")
+        },
+        cityTuitionConstraints: getCheckedValues("cityTuitionConstraints"),
+        constraintNote: fd.get("constraintNote")?.trim(),
+        priorityRanking: getPriorityRanking()
+      };
+    }
+
+    function validateData(data) {
+      const errors = [];
+      const form = el("questionnaire");
+      Array.from(form.querySelectorAll("[required]")).forEach(field => {
+        if (!field.value) {
+          const label = field.closest("label")?.textContent?.replace("*", "").trim() || field.dataset.rankItem || "必填项";
+          errors.push(`请填写：${label}`);
+        }
+      });
+      if (!data.scores.strengthSubjects.length) errors.push("请选择至少一个最擅长科目");
+      if (!data.scores.dislikeSubjects.length) errors.push("请选择至少一个最讨厌科目");
+      if (!data.scores.primarySubject || !data.scores.secondarySubject1 || !data.scores.secondarySubject2) errors.push("请先在问题1选择完整的选科组合");
+      if (Object.values(data.interestRatings).some(v => !v)) errors.push("请完成所有专业方向兴趣评分");
+      if (!data.rejectedMajors.length) errors.push("请至少选择或填写一个明确不想学的专业");
+      if (!data.learningDislikes.length) errors.push("请选择至少一个不能接受的学习内容");
+      if (!data.careerExpectations.length) errors.push("请选择未来工作期待");
+      if (data.careerExpectations.length > 3) errors.push("未来工作期待最多选择 3 个");
+      if (!data.graduateStudy) errors.push("请选择读研意愿");
+      if (!data.workScenes.accepted.length) errors.push("请选择最能接受的工作场景");
+      if (!data.workScenes.rejected.length) errors.push("请选择最不能接受的工作场景");
+      if (data.workScenes.accepted.length > 3 || data.workScenes.rejected.length > 3) errors.push("工作场景每组最多选择 3 个");
+      if (!data.cityTuitionConstraints.length) errors.push("请选择城市、学费、距离限制");
+      const ranks = data.priorityRanking.map(x => x.rank);
+      if (ranks.some(v => !v)) errors.push("请完成重要因素排序");
+      if (new Set(ranks).size !== ranks.length) errors.push("重要因素排序不能重复");
+      return [...new Set(errors)];
+    }
+
+    function includesAny(list, words) {
+      return list.some(item => words.some(word => item.includes(word)));
+    }
+
+    function rating(data, name) {
+      const key = Object.keys(data.interestRatings).find(k => k.includes(name));
+      return key ? Number(data.interestRatings[key]) : 0;
+    }
+
+    function generateTags(data) {
+      const tags = [];
+      const career = data.careerExpectations;
+      const learning = data.learningDislikes;
+      const rejected = data.rejectedMajors;
+      const constraints = data.cityTuitionConstraints;
+      const topRanks = data.priorityRanking.filter(x => x.rank && x.rank <= 3).map(x => x.item);
+
+      if (["高收入", "互联网/软件/数据方向", "技术工程师"].every(x => career.includes(x)) && rating(data, "计算机") >= 4) tags.push("偏软件/数据技术路线");
+      if (learning.includes("物理/电路/力学") && (rating(data, "电子信息") >= 4 || rating(data, "电气") >= 4 || rating(data, "机械") >= 4)) tags.push("硬工科兴趣与承受力存在冲突，需要谨慎判断");
+      if (includesAny(rejected, ["材料", "化工", "环境", "农学", "生物", "食品", "药学"])) tags.push("应避开传统冷门理工农医类专业组");
+      if (rating(data, "地理信息") >= 3 && data.scores.strengthSubjects.includes("地理")) tags.push("可关注 GIS/遥感/空间数据方向");
+      if (data.graduateStudy.includes("不太想") || data.graduateStudy.includes("坚决")) tags.push("优先考虑本科就业明确的专业");
+      if (data.graduateStudy.includes("愿意") || data.graduateStudy.includes("可以接受")) tags.push("可考虑本科专业+考研提升路径");
+      if (career.includes("考公考编") && career.includes("稳定") && data.workScenes.accepted.includes("政府机关/事业单位")) tags.push("偏稳定体制路线");
+      if (constraints.includes("城市越大越好") && career.includes("高收入")) tags.push("城市资源优先级高");
+      if (constraints.includes("不接受高学费") && constraints.includes("公办优先")) tags.push("公办低学费优先");
+      if (topRanks.includes("学起来别太痛苦")) tags.push("需控制专业学习难度，不宜盲目追热门");
+      if (!tags.length) tags.push("信息较均衡，需要结合位次、院校专业组和录取数据继续人工判断");
+      return [...new Set(tags)];
+    }
+
+    function generateWarnings(data, tags) {
+      const warnings = [];
+      if (data.careerExpectations.includes("高收入") && data.priorityRanking.some(x => x.item === "学起来别太痛苦" && x.rank <= 3)) warnings.push("是否存在“想高收入但不愿意承受高强度学习”的矛盾？");
+      if ((rating(data, "计算机") >= 4 || rating(data, "电子信息") >= 4 || rating(data, "电气") >= 4) && data.learningDislikes.includes("物理/电路/力学")) warnings.push("是否存在“喜欢热门工科但排斥物理、电路、力学”的矛盾？");
+      if (data.rejectedMajors.length >= 5) warnings.push("是否需要避开包含排斥专业的院校专业组？");
+      if (data.priorityRanking.some(x => x.item === "专业就业" && x.rank <= 3) && data.priorityRanking.some(x => x.item === "学校名气" && x.rank >= 6)) warnings.push("是否更适合专业优先，而不是学校优先？");
+      if (tags.includes("优先考虑本科就业明确的专业")) warnings.push("是否需要优先选择本科就业明确的专业？");
+      if (data.basicInfo.physicalLimit && data.basicInfo.physicalLimit !== "无") warnings.push("体检限制可能影响医学、公安、军校、航海、色彩相关专业，需要核对招生章程。");
+      if (data.cityTuitionConstraints.includes("不接受民办") || data.cityTuitionConstraints.includes("不接受高学费")) warnings.push("需要提前过滤高收费、中外合作、民办或独立学院相关选项。");
+      return warnings.slice(0, 6);
+    }
+
+    function listText(value) {
+      if (Array.isArray(value)) return value.length ? value.join("、") : "未填写";
+      return value || "未填写";
+    }
+
+    function buildMarkdown(data) {
+      const lines = [];
+      lines.push("# 高考择专业问卷结果", "");
+      lines.push("## 1. 基础信息", "");
+      lines.push(`考生姓名/编号：${listText(data.basicInfo.studentName)}`);
+      lines.push(`省份：${listText(data.basicInfo.province)}`);
+      lines.push(`科类：${listText(data.basicInfo.category)}`);
+      lines.push(`选科组合：${listText(data.basicInfo.subjectCombination)}`);
+      lines.push(`总分：${listText(data.basicInfo.totalScore)}`);
+      lines.push(`位次：${listText(data.basicInfo.rank)}`);
+      lines.push(`性别：${listText(data.basicInfo.gender)}`);
+      lines.push(`体检限制：${listText(data.basicInfo.physicalLimit)}；备注：${listText(data.basicInfo.physicalNote)}`, "");
+      lines.push("## 2. 各科分数", "");
+      lines.push(`语文：${listText(data.scores.chinese)}`);
+      lines.push(`数学：${listText(data.scores.math)}`);
+      lines.push(`英语：${listText(data.scores.english)}`);
+      lines.push(`首选科目：${listText(data.scores.primarySubject)} ${listText(data.scores.primarySubjectScore)}`);
+      lines.push(`再选科目1：${listText(data.scores.secondarySubject1)} ${listText(data.scores.secondarySubject1Score)}`);
+      lines.push(`再选科目2：${listText(data.scores.secondarySubject2)} ${listText(data.scores.secondarySubject2Score)}`);
+      lines.push(`最擅长科目：${listText(data.scores.strengthSubjects)}`);
+      lines.push(`最讨厌科目：${listText(data.scores.dislikeSubjects)}`);
+      lines.push(`补充说明：${listText(data.scores.note)}`, "");
+      lines.push("## 3. 专业兴趣评分", "");
+      Object.entries(data.interestRatings).forEach(([key, value]) => lines.push(`${key}：${value}`));
+      lines.push("", "## 4. 明确排斥专业", "", listText(data.rejectedMajors), "");
+      lines.push("## 5. 不能接受的学习内容", "", listText(data.learningDislikes), `补充说明：${listText(data.learningNote)}`, "");
+      lines.push("## 6. 未来工作期待", "", listText(data.careerExpectations), "");
+      lines.push("## 7. 读研意愿", "", listText(data.graduateStudy), "");
+      lines.push("## 8. 工作场景", "", `最能接受：${listText(data.workScenes.accepted)}`, `最不能接受：${listText(data.workScenes.rejected)}`, "");
+      lines.push("## 9. 城市、学费、距离限制", "", listText(data.cityTuitionConstraints), `补充说明：${listText(data.constraintNote)}`, "");
+      lines.push("## 10. 重要因素排序", "");
+      data.priorityRanking.forEach(item => lines.push(`${item.rank}. ${item.item}`));
+      lines.push("", "## 11. 系统初步标签", "");
+      data.autoTags.forEach(tag => lines.push(`- ${tag}`));
+      lines.push("", "## 12. 需要人工重点判断的问题", "");
+      data.analysisWarnings.forEach(warning => lines.push(`- ${warning}`));
+      return lines.join("\n");
+    }
+
+    function enrichData(data) {
+      data.autoTags = generateTags(data);
+      data.analysisWarnings = generateWarnings(data, data.autoTags);
+      data.markdown = buildMarkdown(data);
+      return data;
+    }
+
+    function renderResult(data) {
+      currentResult = data;
+      el("resultPanel").hidden = false;
+      el("resultSummary").innerHTML = [
+        ["考生", data.basicInfo.studentName],
+        ["省份/科类", `${data.basicInfo.province} / ${data.basicInfo.category}`],
+        ["总分/位次", `${data.basicInfo.totalScore} / ${data.basicInfo.rank}`],
+        ["初步标签", data.autoTags.join("；")]
+      ].map(([k, v]) => `<div class="summary-item"><strong>${safe(k)}</strong><span>${safe(v || "未填写")}</span></div>`).join("");
+      el("markdownPreview").textContent = data.markdown;
+      el("resultPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function getHistory() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEYS.history) || "[]"); }
+      catch { return []; }
+    }
+
+    function setHistory(history) {
+      localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(history));
+      renderHistory();
+    }
+
+    function saveToHistory(data) {
+      const history = getHistory();
+      const exists = history.some(item => item.id === data.id);
+      setHistory(exists ? history.map(item => item.id === data.id ? data : item) : [data, ...history]);
+    }
+
+    function renderHistory() {
+      const list = el("historyList");
+      const history = getHistory();
+      if (!history.length) {
+        list.innerHTML = `<p class="hint">暂无历史记录。提交问卷后会自动保存一条记录。</p>`;
+        return;
+      }
+      list.innerHTML = "";
+      history.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "history-item";
+        div.innerHTML = `
+          <strong>${safe(item.basicInfo.studentName || "未命名考生")}</strong>
+          <div class="history-meta">
+            <span>省份：${safe(item.basicInfo.province || "未填写")}；科类：${safe(item.basicInfo.category || "未填写")}</span>
+            <span>总分：${safe(item.basicInfo.totalScore || "未填写")}；位次：${safe(item.basicInfo.rank || "未填写")}</span>
+            <span>提交时间：${safe(item.submittedAt || "未记录")}</span>
+          </div>
+          <div class="actions">
+            <button type="button" class="btn-secondary" data-action="view">查看详情</button>
+            <button type="button" class="btn-secondary" data-action="copy">复制 Markdown</button>
+            <button type="button" class="btn-secondary" data-action="json">导出单条 JSON</button>
+            <button type="button" class="btn-danger" data-action="delete">删除单条</button>
+          </div>`;
+        div.querySelector('[data-action="view"]').addEventListener("click", () => renderResult(item));
+        div.querySelector('[data-action="copy"]').addEventListener("click", () => copyText(item.markdown));
+        div.querySelector('[data-action="json"]').addEventListener("click", () => downloadFile(fileBaseName(item) + ".json", JSON.stringify(item, null, 2), "application/json;charset=utf-8"));
+        div.querySelector('[data-action="delete"]').addEventListener("click", () => {
+          if (confirm("确认删除这条历史记录？")) setHistory(getHistory().filter(x => x.id !== item.id));
+        });
+        list.appendChild(div);
+      });
+    }
+
+    function fileBaseName(data) {
+      const name = (data.basicInfo.studentName || "考生").replace(/[\\/:*?"<>|]/g, "_");
+      return `${name}_高考择专业问卷_${data.id}`;
+    }
+
+    function downloadFile(filename, content, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function toCsv(data) {
+      const flat = {
+        id: data.id,
+        submittedAt: data.submittedAt,
+        studentName: data.basicInfo.studentName,
+        province: data.basicInfo.province,
+        category: data.basicInfo.category,
+        subjectCombination: data.basicInfo.subjectCombination,
+        selectedSubjectPair: data.basicInfo.selectedSubjectPair,
+        totalScore: data.basicInfo.totalScore,
+        rank: data.basicInfo.rank,
+        physicalLimit: data.basicInfo.physicalLimit,
+        chineseScore: data.scores.chinese,
+        mathScore: data.scores.math,
+        englishScore: data.scores.english,
+        primarySubject: data.scores.primarySubject,
+        primarySubjectScore: data.scores.primarySubjectScore,
+        secondarySubject1: data.scores.secondarySubject1,
+        secondarySubject1Score: data.scores.secondarySubject1Score,
+        secondarySubject2: data.scores.secondarySubject2,
+        secondarySubject2Score: data.scores.secondarySubject2Score,
+        strengthSubjects: data.scores.strengthSubjects.join("、"),
+        dislikeSubjects: data.scores.dislikeSubjects.join("、"),
+        rejectedMajors: data.rejectedMajors.join("、"),
+        learningDislikes: data.learningDislikes.join("、"),
+        careerExpectations: data.careerExpectations.join("、"),
+        graduateStudy: data.graduateStudy,
+        acceptedWorkScenes: data.workScenes.accepted.join("、"),
+        rejectedWorkScenes: data.workScenes.rejected.join("、"),
+        cityTuitionConstraints: data.cityTuitionConstraints.join("、"),
+        priorityRanking: data.priorityRanking.map(x => `${x.rank}.${x.item}`).join("；"),
+        autoTags: data.autoTags.join("；"),
+        analysisWarnings: data.analysisWarnings.join("；")
+      };
+      Object.entries(data.interestRatings).forEach(([key, value]) => flat[`兴趣评分_${key}`] = value);
+      const headers = Object.keys(flat);
+      const escape = value => `"${String(value ?? "").replace(/"/g, '""')}"`;
+      return "\ufeff" + headers.join(",") + "\n" + headers.map(h => escape(flat[h])).join(",");
+    }
+
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch {
+        const area = document.createElement("textarea");
+        area.value = text;
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand("copy");
+        area.remove();
+      }
+      showToast("已复制");
+    }
+
+    function serializeDraft() {
+      const data = collectData();
+      data.formValues = {};
+      new FormData(el("questionnaire")).forEach((value, key) => {
+        if (!data.formValues[key]) data.formValues[key] = [];
+        data.formValues[key].push(value);
+      });
+      return data;
+    }
+
+    function saveDraft() {
+      localStorage.setItem(STORAGE_KEYS.draft, JSON.stringify(serializeDraft()));
+      showToast("草稿已保存");
+    }
+
+    function loadDraft() {
+      const raw = localStorage.getItem(STORAGE_KEYS.draft);
+      if (!raw) return showToast("没有找到草稿");
+      const draft = JSON.parse(raw);
+      clearForm(false);
+      Object.entries(draft.formValues || {}).forEach(([key, values]) => {
+        document.querySelectorAll(`[name="${CSS.escape(key)}"]`).forEach(input => {
+          if (input.type === "checkbox" || input.type === "radio") input.checked = values.includes(input.value);
+          else input.value = values[0] || "";
+        });
+      });
+      updateSubjectCombinationOptions();
+      if (draft.formValues?.subjectCombination?.[0]) {
+        el("subjectCombinationSelect").value = draft.formValues.subjectCombination[0];
+      }
+      updateSubjectDisplays();
+      Object.entries(draft.interestRatings || {}).forEach(([direction, value]) => {
+        const row = Array.from(document.querySelectorAll("#interestRatings .rating-row")).find(r => r.dataset.direction === direction);
+        if (row && value) {
+          row.dataset.value = value;
+          row.querySelectorAll(".rate-btn").forEach(btn => btn.classList.toggle("active", Number(btn.dataset.value) === Number(value)));
+        }
+      });
+      (draft.priorityRanking || []).forEach(item => {
+        const select = document.querySelector(`[data-rank-item="${CSS.escape(item.item)}"]`);
+        if (select) select.value = item.rank || "";
+      });
+      updateRankingOptionStyles();
+      ["strengthSubjects","dislikeSubjects","rejectedMajors","learningDislikes","careerExpectations","graduateStudy","acceptedWorkScenes","rejectedWorkScenes","cityTuitionConstraints"].forEach(updateChoiceStyles);
+      updateProgress();
+      showToast("草稿已读取");
+    }
+
+    function clearForm(confirmFirst = true) {
+      if (confirmFirst && !confirm("确认清空当前表单？")) return;
+      el("questionnaire").reset();
+      document.querySelectorAll(".chip").forEach(chip => chip.classList.remove("selected"));
+      document.querySelectorAll("#interestRatings .rating-row").forEach(row => {
+        delete row.dataset.value;
+        row.querySelectorAll(".rate-btn").forEach(btn => btn.classList.remove("active"));
+      });
+      updateSubjectCombinationOptions();
+      updateSubjectDisplays();
+      updateRankingOptionStyles();
+      el("errorBox").classList.remove("show");
+      updateProgress();
+    }
+
+    function sectionComplete(section) {
+      const data = collectData();
+      const validators = {
+        basic: () => data.basicInfo.studentName && data.basicInfo.province && data.basicInfo.category && data.basicInfo.subjectCombination && data.basicInfo.totalScore && data.basicInfo.rank && data.basicInfo.physicalLimit,
+        scores: () => data.scores.chinese && data.scores.math && data.scores.english && data.scores.primarySubject && data.scores.primarySubjectScore && data.scores.secondarySubject1 && data.scores.secondarySubject1Score && data.scores.secondarySubject2 && data.scores.secondarySubject2Score && data.scores.strengthSubjects.length && data.scores.dislikeSubjects.length,
+        interests: () => Object.values(data.interestRatings).every(Boolean),
+        rejected: () => data.rejectedMajors.length,
+        learning: () => data.learningDislikes.length,
+        career: () => data.careerExpectations.length && data.careerExpectations.length <= 3,
+        graduate: () => data.graduateStudy,
+        work: () => data.workScenes.accepted.length && data.workScenes.accepted.length <= 3 && data.workScenes.rejected.length && data.workScenes.rejected.length <= 3,
+        constraints: () => data.cityTuitionConstraints.length,
+        ranking: () => data.priorityRanking.every(x => x.rank) && new Set(data.priorityRanking.map(x => x.rank)).size === 10
+      };
+      return Boolean(validators[section]?.());
+    }
+
+    function updateProgress() {
+      const sections = Array.from(document.querySelectorAll("[data-section]")).map(s => s.dataset.section);
+      const done = sections.filter(sectionComplete).length;
+      el("progressText").textContent = `已完成 ${done}/10`;
+      el("progressBar").style.width = `${done * 10}%`;
+    }
+
+    function init() {
+      renderProvinceAndSubjectSelectors();
+      renderChoiceGroup("strengthSubjects", "strengthSubjects", SUBJECTS);
+      renderChoiceGroup("dislikeSubjects", "dislikeSubjects", SUBJECTS);
+      renderRatings();
+      renderChoiceGroup("rejectedMajors", "rejectedMajors", REJECTED_MAJOR_OPTIONS);
+      renderChoiceGroup("learningDislikes", "learningDislikes", LEARNING_OPTIONS);
+      renderChoiceGroup("careerExpectations", "careerExpectations", CAREER_OPTIONS, "checkbox", 3);
+      renderChoiceGroup("graduateStudy", "graduateStudy", GRADUATE_OPTIONS, "radio");
+      renderChoiceGroup("acceptedWorkScenes", "acceptedWorkScenes", WORK_SCENES, "checkbox", 3);
+      renderChoiceGroup("rejectedWorkScenes", "rejectedWorkScenes", WORK_SCENES, "checkbox", 3);
+      renderChoiceGroup("cityTuitionConstraints", "cityTuitionConstraints", CONSTRAINT_OPTIONS);
+      renderRanking();
+      renderHistory();
+
+      el("questionnaire").addEventListener("input", updateProgress);
+      el("questionnaire").addEventListener("change", updateProgress);
+      el("questionnaire").addEventListener("submit", event => {
+        event.preventDefault();
+        const data = enrichData(collectData());
+        const errors = validateData(data);
+        if (errors.length) {
+          el("errorBox").innerHTML = `<strong>请先补全以下内容：</strong><ul>${errors.slice(0, 12).map(e => `<li>${e}</li>`).join("")}</ul>`;
+          el("errorBox").classList.add("show");
+          el("errorBox").scrollIntoView({ behavior: "smooth", block: "center" });
+          return;
+        }
+        el("errorBox").classList.remove("show");
+        renderResult(data);
+        saveToHistory(data);
+        showToast("已生成结果并保存历史");
+      });
+
+      el("saveDraftBtn").addEventListener("click", saveDraft);
+      el("loadDraftBtn").addEventListener("click", loadDraft);
+      ["clearFormBtn", "clearFormBtn2", "clearFormBtn3"].forEach(id => el(id).addEventListener("click", () => clearForm(true)));
+      el("copyMarkdownBtn").addEventListener("click", () => currentResult && copyText(currentResult.markdown));
+      el("exportJsonBtn").addEventListener("click", () => currentResult && downloadFile(fileBaseName(currentResult) + ".json", JSON.stringify(currentResult, null, 2), "application/json;charset=utf-8"));
+      el("exportCsvBtn").addEventListener("click", () => currentResult && downloadFile(fileBaseName(currentResult) + ".csv", toCsv(currentResult), "text/csv;charset=utf-8"));
+      el("saveHistoryBtn").addEventListener("click", () => {
+        if (!currentResult) return;
+        saveToHistory(currentResult);
+        showToast("已保存到历史记录");
+      });
+      el("refreshHistoryBtn").addEventListener("click", renderHistory);
+      el("clearHistoryBtn").addEventListener("click", () => {
+        if (confirm("确认清空全部历史记录？此操作只影响当前浏览器。")) setHistory([]);
+      });
+      updateProgress();
+    }
+
+    init();
+  </script>
+</body>
+</html>
